@@ -1,12 +1,15 @@
 import React, { useContext, useState } from "react";
-import { v4 as randomId } from "uuid";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { UserProvider } from "../context/UserContext";
+
 const Login = () => {
-  let {login} = useContext(UserProvider)
+  let { login } = useContext(UserProvider);
   let navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
   let [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,21 +21,32 @@ const Login = () => {
   let handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-  console.log(formData);
+
   let handleSubmit = async (e) => {
     e.preventDefault();
-    let res = await axios.get(
-      `http://localhost:5000/users?email=${email}&password=${password}&role=${role}`,
-    );
-    if (res.status == 200 && res.data.length > 0) {
-      login(res.data[0])
-      
-      toast.success("login successfull");
-      navigate("/");
-    } else {
-      toast.error("cannot login");
+
+    try {
+      let res = await axios.get(
+        `${API_URL}/users?email=${email}&password=${password}&role=${role}`
+      );
+
+      if (res.status == 200 && res.data.length > 0) {
+        login(res.data[0]);
+
+        toast.success("Login successful");
+        navigate("/");
+      } else {
+        toast.error("Cannot login");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -41,7 +55,6 @@ const Login = () => {
       onSubmit={handleSubmit}
       className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/50 sm:p-8"
     >
-      {/* Heading */}
       <div className="mb-6 text-center">
         <p className="mt-2 text-sm text-slate-500">Login</p>
       </div>
@@ -87,7 +100,7 @@ const Login = () => {
           />
         </div>
 
-        {/* Gender */}
+        {/* Role */}
         <div>
           <label className="mb-3 block text-sm font-medium text-slate-700">
             Role
@@ -115,7 +128,7 @@ const Login = () => {
                 name="role"
                 className="h-4 w-4 accent-blue-600"
               />
-              user
+              User
             </label>
           </div>
         </div>
@@ -128,7 +141,13 @@ const Login = () => {
           Login
         </button>
       </div>
-      <p>Don't have an account ? <Link to='/signup'>SignUp</Link></p>
+
+      <p className="mt-4 text-sm">
+        Don't have an account?{" "}
+        <Link to="/signup" className="text-blue-600 hover:underline">
+          SignUp
+        </Link>
+      </p>
     </form>
   );
 };

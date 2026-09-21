@@ -9,8 +9,6 @@ const AddCourse = () => {
   let navigate = useNavigate();
   const { handleAddCourse } = useContext(CourseProvider);
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   const [cDetails, setCDetails] = useState({
     cName: "",
     cPrice: "",
@@ -42,10 +40,13 @@ const AddCourse = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${API_URL}/courses`, {
-        id: randomId(),
-        ...cDetails,
-      });
+      const res = await axios.post(
+        "https://course-management-system-w77d.onrender.com/courses",
+        {
+          id: randomId(),
+          ...cDetails,
+        }
+      );
 
       if (res.status === 201) {
         toast.success("Course Added Successfully");
@@ -83,7 +84,6 @@ const AddCourse = () => {
         </p>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-          {/* Course Name */}
           <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Course Name
@@ -100,7 +100,6 @@ const AddCourse = () => {
             />
           </div>
 
-          {/* Image */}
           <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Course Image URL
@@ -117,7 +116,6 @@ const AddCourse = () => {
             />
           </div>
 
-          {/* Duration */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Duration
@@ -134,7 +132,6 @@ const AddCourse = () => {
             />
           </div>
 
-          {/* Price */}
           <div>
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Price
@@ -151,7 +148,6 @@ const AddCourse = () => {
             />
           </div>
 
-          {/* Trainer */}
           <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Trainer
@@ -168,7 +164,6 @@ const AddCourse = () => {
             />
           </div>
 
-          {/* Description */}
           <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-gray-700">
               Description
@@ -186,7 +181,6 @@ const AddCourse = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button
           type="submit"
           className="mt-7 w-full rounded-lg bg-blue-600 py-3 font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"

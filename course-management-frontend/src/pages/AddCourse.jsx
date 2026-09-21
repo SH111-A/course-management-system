@@ -6,8 +6,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const AddCourse = () => {
-  let navigate = useNavigate()
+  let navigate = useNavigate();
   const { handleAddCourse } = useContext(CourseProvider);
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const [cDetails, setCDetails] = useState({
     cName: "",
@@ -40,19 +42,16 @@ const AddCourse = () => {
     e.preventDefault();
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/courses",
-        {
-          id: randomId(),
-          ...cDetails,
-        }
-      );
+      const res = await axios.post(`${API_URL}/courses`, {
+        id: randomId(),
+        ...cDetails,
+      });
 
       if (res.status === 201) {
         toast.success("Course Added Successfully");
 
         handleAddCourse(res.data);
-        navigate('/')
+        navigate("/");
 
         setCDetails({
           cName: "",
@@ -84,7 +83,6 @@ const AddCourse = () => {
         </p>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-
           {/* Course Name */}
           <div className="sm:col-span-2">
             <label className="mb-2 block text-sm font-semibold text-gray-700">

@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { v4 as randomId } from "uuid";
 import { CourseProvider } from "../context/CourseContext";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,6 +8,7 @@ const UpdateCourse = () => {
   let { findById, handleUpdateCourse } = useContext(CourseProvider);
   let { id } = useParams();
   let navigate = useNavigate();
+
   const [cDetails, setCDetails] = useState({
     cName: "",
     cPrice: "",
@@ -19,8 +19,12 @@ const UpdateCourse = () => {
   });
 
   useEffect(() => {
-    setCDetails(findById(id));
-  }, [id]);
+    const course = findById(id);
+
+    if (course) {
+      setCDetails(course);
+    }
+  }, [id, findById]);
 
   const { cDesc, cDuration, cImg, cName, cPrice, cTrainer } = cDetails;
 
@@ -35,12 +39,23 @@ const UpdateCourse = () => {
 
   let handleSubmit = async (e) => {
     e.preventDefault();
-    let res = await axios.put(`http://localhost:5000/courses/${id}`, cDetails);
-    console.log(res);
-    if (res.status == 200) {
-      toast.success("Course Updated Successfully");
-      handleUpdateCourse(res.data);
-      navigate('/')
+
+    try {
+      let res = await axios.put(
+        `https://course-management-system-w77d.onrender.com/courses/${id}`,
+        cDetails
+      );
+
+      console.log(res);
+
+      if (res.status == 200) {
+        toast.success("Course Updated Successfully");
+        handleUpdateCourse(res.data);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to update course");
     }
   };
 
@@ -55,7 +70,7 @@ const UpdateCourse = () => {
         </h1>
 
         <p className="mb-8 text-center text-sm text-gray-500">
-          Fill in the details to create a new course
+          Fill in the details to update the course
         </p>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -69,7 +84,7 @@ const UpdateCourse = () => {
               type="text"
               placeholder="Enter course name"
               name="cName"
-              value={cName}
+              value={cName || ""}
               onChange={handleChange}
               required
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -86,7 +101,7 @@ const UpdateCourse = () => {
               type="url"
               placeholder="https://example.com/course.jpg"
               name="cImg"
-              value={cImg}
+              value={cImg || ""}
               onChange={handleChange}
               required
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -102,7 +117,7 @@ const UpdateCourse = () => {
             <input
               type="text"
               placeholder="e.g. 3 Months"
-              value={cDuration}
+              value={cDuration || ""}
               name="cDuration"
               onChange={handleChange}
               required
@@ -119,7 +134,7 @@ const UpdateCourse = () => {
             <input
               type="number"
               placeholder="Enter price"
-              value={cPrice}
+              value={cPrice || ""}
               name="cPrice"
               onChange={handleChange}
               required
@@ -136,7 +151,7 @@ const UpdateCourse = () => {
             <input
               type="text"
               placeholder="Enter trainer name"
-              value={cTrainer}
+              value={cTrainer || ""}
               name="cTrainer"
               onChange={handleChange}
               required
@@ -153,7 +168,7 @@ const UpdateCourse = () => {
             <textarea
               placeholder="Enter course description"
               name="cDesc"
-              value={cDesc}
+              value={cDesc || ""}
               onChange={handleChange}
               required
               rows="4"

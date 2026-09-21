@@ -8,8 +8,6 @@ const Login = () => {
   let { login } = useContext(UserProvider);
   let navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   let [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -33,7 +31,7 @@ const Login = () => {
 
     try {
       let res = await axios.get(
-        `${API_URL}/users?email=${email}&password=${password}&role=${role}`
+        `https://course-management-system-w77d.onrender.com/users?email=${email}&password=${password}&role=${role}`
       );
 
       if (res.status == 200 && res.data.length > 0) {
@@ -60,7 +58,6 @@ const Login = () => {
       </div>
 
       <div className="space-y-5">
-        {/* Email */}
         <div>
           <label
             htmlFor="email"
@@ -80,7 +77,6 @@ const Login = () => {
           />
         </div>
 
-        {/* Password */}
         <div>
           <label
             htmlFor="password"
@@ -100,7 +96,6 @@ const Login = () => {
           />
         </div>
 
-        {/* Role */}
         <div>
           <label className="mb-3 block text-sm font-medium text-slate-700">
             Role
@@ -133,7 +128,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Button */}
         <button
           type="submit"
           className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98]"

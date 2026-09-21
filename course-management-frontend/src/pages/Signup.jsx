@@ -3,8 +3,12 @@ import { v4 as randomId } from "uuid";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
+
 const SignUp = () => {
   let navigate = useNavigate();
+
+  const API_URL = import.meta.env.VITE_API_URL;
+
   let [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -18,33 +22,60 @@ const SignUp = () => {
   let handleChange = (e) => {
     let name = e.target.name;
     let value = e.target.value;
-    setFormData({ ...formData, [name]: value });
+
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
-  console.log(formData);
+
   let handleSubmit = async (e) => {
     e.preventDefault();
-    let data = { ...formData, id: randomId(), role: "user" };
-    let already = await axios.get(`http://localhost:5000/users?email=${email}`);
-    let alreadyExists = already.data.length > 0;
-    if (alreadyExists) {
-      toast.error("user already exist");
-    } else {
-      let res = await axios.post(`http://localhost:5000/users`, data);
-      console.log(res);
-      if (res.status == 201) {
-        toast.success("User Created Successfully");
-        navigate("/login");
-      } else {
-        toast.error("User cannot be created");
-      }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
     }
-    setFormData({
-      username: "",
-      password: "",
-      confirmPassword: "",
-      gender: "",
-      email: "",
-    });
+
+    try {
+      let data = {
+        ...formData,
+        id: randomId(),
+        role: "user",
+      };
+
+      let already = await axios.get(
+        `${API_URL}/users?email=${email}`
+      );
+
+      let alreadyExists = already.data.length > 0;
+
+      if (alreadyExists) {
+        toast.error("User already exists");
+      } else {
+        let res = await axios.post(`${API_URL}/users`, data);
+
+        console.log(res);
+
+        if (res.status == 201) {
+          toast.success("User Created Successfully");
+          navigate("/login");
+        } else {
+          toast.error("User cannot be created");
+        }
+      }
+
+      setFormData({
+        username: "",
+        password: "",
+        confirmPassword: "",
+        gender: "",
+        email: "",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
   };
 
   return (
@@ -54,7 +85,10 @@ const SignUp = () => {
     >
       {/* Heading */}
       <div className="mb-6 text-center">
-        <h2 className="text-2xl font-bold text-slate-900">Create an Account</h2>
+        <h2 className="text-2xl font-bold text-slate-900">
+          Create an Account
+        </h2>
+
         <p className="mt-2 text-sm text-slate-500">
           Sign up to start learning today
         </p>
@@ -182,8 +216,13 @@ const SignUp = () => {
           Sign Up
         </button>
       </div>
-      <p>Already have an account ? <Link to='/login'>Login</Link></p>
 
+      <p className="mt-4 text-sm">
+        Already have an account?{" "}
+        <Link to="/login" className="text-blue-600 hover:underline">
+          Login
+        </Link>
+      </p>
     </form>
   );
 };

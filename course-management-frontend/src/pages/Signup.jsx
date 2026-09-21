@@ -7,8 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 const SignUp = () => {
   let navigate = useNavigate();
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   let [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -45,7 +43,7 @@ const SignUp = () => {
       };
 
       let already = await axios.get(
-        `${API_URL}/users?email=${email}`
+        `https://course-management-system-w77d.onrender.com/users?email=${email}`
       );
 
       let alreadyExists = already.data.length > 0;
@@ -53,9 +51,10 @@ const SignUp = () => {
       if (alreadyExists) {
         toast.error("User already exists");
       } else {
-        let res = await axios.post(`${API_URL}/users`, data);
-
-        console.log(res);
+        let res = await axios.post(
+          "https://course-management-system-w77d.onrender.com/users",
+          data
+        );
 
         if (res.status == 201) {
           toast.success("User Created Successfully");
@@ -83,7 +82,6 @@ const SignUp = () => {
       onSubmit={handleSubmit}
       className="mx-auto w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-lg shadow-slate-200/50 sm:p-8"
     >
-      {/* Heading */}
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-slate-900">
           Create an Account
@@ -95,7 +93,6 @@ const SignUp = () => {
       </div>
 
       <div className="space-y-5">
-        {/* Username */}
         <div>
           <label
             htmlFor="username"
@@ -115,7 +112,6 @@ const SignUp = () => {
           />
         </div>
 
-        {/* Email */}
         <div>
           <label
             htmlFor="email"
@@ -135,7 +131,6 @@ const SignUp = () => {
           />
         </div>
 
-        {/* Password */}
         <div>
           <label
             htmlFor="password"
@@ -155,7 +150,6 @@ const SignUp = () => {
           />
         </div>
 
-        {/* Confirm Password */}
         <div>
           <label
             htmlFor="confirmPassword"
@@ -175,7 +169,6 @@ const SignUp = () => {
           />
         </div>
 
-        {/* Gender */}
         <div>
           <label className="mb-3 block text-sm font-medium text-slate-700">
             Gender
@@ -208,7 +201,6 @@ const SignUp = () => {
           </div>
         </div>
 
-        {/* Button */}
         <button
           type="submit"
           className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm shadow-blue-200 transition-all duration-200 hover:bg-blue-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-blue-500/20 active:scale-[0.98]"

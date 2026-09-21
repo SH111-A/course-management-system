@@ -6,8 +6,6 @@ export let CourseProvider = createContext();
 const CourseContext = ({ children }) => {
   let [allCourses, setAllCourses] = useState(null);
 
-  const API_URL = import.meta.env.VITE_API_URL;
-
   let findById = (id) => {
     let data = allCourses?.find((el) => {
       return el.id == id;
@@ -18,7 +16,9 @@ const CourseContext = ({ children }) => {
 
   let getAllCourses = async () => {
     try {
-      let res = await axios.get(`${API_URL}/courses`);
+      let res = await axios.get(
+        "https://course-management-system-w77d.onrender.com/courses"
+      );
 
       if (res.status == 200 && res.data.length > 0) {
         setAllCourses(res.data);
@@ -45,7 +45,9 @@ const CourseContext = ({ children }) => {
       let filtered = allCourses?.filter((el) => el.id != id);
       setAllCourses(filtered);
 
-      let res = await axios.delete(`${API_URL}/courses/${id}`);
+      let res = await axios.delete(
+        `https://course-management-system-w77d.onrender.com/courses/${id}`
+      );
 
       console.log(res);
     } catch (error) {
